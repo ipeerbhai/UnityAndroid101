@@ -142,6 +142,7 @@ public class SceneManager : MonoBehaviour
     {
         m_SelectedGameObject = null;
         model = Assets.Scripts.AITransactionHandler.GetFullModelFromCloud();
+        DestroyOrInstantiateModel(false);
         messageToDisplay = "";
         DisplayMessage("Start Success");
         microphoneAudioSource = GetComponent<AudioSource>();
