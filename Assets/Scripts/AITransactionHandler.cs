@@ -11,8 +11,8 @@ namespace Assets.Scripts
     public class AITransactionHandler
     {
         public string AuthorizationString = "SMe75ff0bdf59cdc3c7106aaad84e7f16a";
-        //private string m_BaseURI = @"http://dev.thinkpredict.com:3000";
-        private string m_BaseURI = @"http://127.0.0.1:3000";
+        private string m_BaseURI = @"http://dev.thinkpredict.com:3000";
+        //private string m_BaseURI = @"http://127.0.0.1:3000";
 
         public static bool HasNewModel { get; internal set; }
 
@@ -201,7 +201,12 @@ namespace Assets.Scripts
                             output.transform.Rotate(Vector3.up, RotationAroundY);
                         if (AllowedRotateZ)
                             output.transform.Rotate(Vector3.forward, RotationAroundZ);
+                      
                         WWW www = new WWW("http://i.imgur.com/KsBip3Y.jpg");
+                        while(!www.isDone)
+                        {
+                            System.Threading.Thread.Sleep(500);
+                        }
                         output.GetComponent<Renderer>().material.mainTexture = www.texture;
                     }
 

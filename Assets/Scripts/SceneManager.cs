@@ -58,7 +58,7 @@ public class SceneManager : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        model = new List<GameObject>() { GameObject.CreatePrimitive(PrimitiveType.Capsule) };
+        model = new List<GameObject>() { GameObject.CreatePrimitive(PrimitiveType.Cube) };
         messageToDisplay = "";
         DisplayMessage("Start Success");
         microphoneAudioSource = GetComponent<AudioSource>();
