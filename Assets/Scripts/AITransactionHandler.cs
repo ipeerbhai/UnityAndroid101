@@ -10,12 +10,16 @@ namespace Assets.Scripts
 {
     public class AITransactionHandler
     {
-        public void SendDataToCloud(MemoryStream waveData)
+        public string AccessCode = "SMe75ff0bdf59cdc3c7106aaad84e7f16a";
+        private string m_BaseURI = @"http://dev.thinkpredict.com:3000";
+
+        //----------------------------------------------------------------------------------------------
+        public void SendDataToCloud(MemoryStream waveData, string relativeEndpoint, string _contentType)
         {
             // We need to make an HTTP Request to a URI and send the chunked wavstream.
-            string requestUri = @"http://192.168.1.13:3000/v1/GetLanguageModel";
+            string requestUri = m_BaseURI + relativeEndpoint;
             string responseString = "";
-            string contentType = @"audio/x-wav;codec=pcm;bit=16;rate=16000";
+            string contentType = _contentType;
 
             SceneManager.messageToDisplay += "Contacting cloud";
 
@@ -25,7 +29,7 @@ namespace Assets.Scripts
             httpWebRequest.SendChunked = true;
             httpWebRequest.Accept = @"text/plain";
             httpWebRequest.Method = "POST";
-            httpWebRequest.Headers["Authorization"] = "SMe75ff0bdf59cdc3c7106aaad84e7f16a"; // Test API key
+            httpWebRequest.Headers["Authorization"] = AccessCode;
             httpWebRequest.ProtocolVersion = HttpVersion.Version11;
 
             // make the request, stream the chunks.
@@ -105,6 +109,19 @@ namespace Assets.Scripts
             FSWriteMe.Flush();
             FSWriteMe.Dispose();
             return;
+        }
+
+
+        //----------------------------------------------------------------------------------------------
+        public void SendDataToCloud(MemoryStream waveData)
+        {
+            SendDataToCloud(waveData, "/v1/PostWave", @"audio/x-wav;codec=pcm;bit=16;rate=16000");
+        }
+
+        //----------------------------------------------------------------------------------------------
+        public List<GameObject> GetFullModelFromCloud()
+        {
+            throw new NotImplementedException();
         }
     }
 }
