@@ -201,8 +201,13 @@ namespace Assets.Scripts
                             output.transform.Rotate(Vector3.up, RotationAroundY);
                         if (AllowedRotateZ)
                             output.transform.Rotate(Vector3.forward, RotationAroundZ);
+                        WWW www = new WWW("http://i.imgur.com/KsBip3Y.jpg");
+                        output.GetComponent<Renderer>().material.mainTexture = www.texture;
                     }
+
+                    
                 }
+
             }
             return (output);
         }
