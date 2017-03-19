@@ -14,6 +14,7 @@ public class SceneManager : MonoBehaviour
     private int secondsToRecord = 10;
     private float m_timeAccumulator = 0;
     static public string messageToDisplay { get; set; }
+    private static List<GameObject> model;
 
     public void DisplayMessage(string message = "")
     {
@@ -30,7 +31,7 @@ public class SceneManager : MonoBehaviour
             m_timeAccumulator = 0;
         }
         if (messageToDisplay.Length > 100)
-            messageToDisplay = (message.Length > 3)? message + "\n": messageToDisplay;
+            messageToDisplay = (message.Length > 3) ? message + "\n" : messageToDisplay;
         else
             messageToDisplay += message;
         var theTextGameObject = GameObject.Find("txtMainData");
@@ -38,9 +39,26 @@ public class SceneManager : MonoBehaviour
         theTextComponent.text = messageToDisplay;
     }
 
+    public void DestroyOrInstantiateModel(bool DestroyMode = true)
+    {
+        if ((model != null) && (model.Count > 0))
+        {
+            foreach (GameObject thisGO in model)
+            {
+                if (DestroyMode)
+                    Destroy(thisGO);
+                else
+                    Instantiate(thisGO);
+            }
+            if (DestroyMode)
+                model = null;
+        }
+    }
+
     // Use this for initialization
     void Start()
     {
+        model = new List<GameObject>() { GameObject.CreatePrimitive(PrimitiveType.Capsule) };
         messageToDisplay = "";
         DisplayMessage("Start Success");
         microphoneAudioSource = GetComponent<AudioSource>();
@@ -100,7 +118,7 @@ public class SceneManager : MonoBehaviour
         float recordingPosition = -1;
         if (Microphone.IsRecording(null))
         {
-            recordingPosition = (Microphone.GetPosition(null)/16000) * secondsToRecord;
+            recordingPosition = (Microphone.GetPosition(null) / 16000) * secondsToRecord;
 
             // if the Mic is getting close to the buffer length, consolidate the clip, stop, and restart the Mic.
             if (recordingPosition > secondsToRecord - 1)
@@ -127,6 +145,13 @@ public class SceneManager : MonoBehaviour
 
             // send the clip to be transacted
             soundMgr.Start();
+        }
+        if (Assets.Scripts.AITransactionHandler.HasNewModel)
+        {
+            DestroyOrInstantiateModel(true);
+            if (model == null)
+                model = Assets.Scripts.AITransactionHandler.GetFullModelFromCloud();
+            DestroyOrInstantiateModel(false);
         }
 
         // rotate the cube.
